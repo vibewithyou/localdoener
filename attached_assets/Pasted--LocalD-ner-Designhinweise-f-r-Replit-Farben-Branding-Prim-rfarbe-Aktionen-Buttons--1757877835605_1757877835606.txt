@@ -1,0 +1,56 @@
+# LocalDöner – Designhinweise für Replit
+
+## Farben & Branding
+- Primärfarbe (Aktionen, Buttons, Logo-Highlight): #E63946 (Chili-Rot)
+- Sekundärfarbe (Badges, positive Hinweise): #2A9D8F (Frisch-Grün)
+- Hintergrund dunkel: #0B0E14
+- Flächen: #111318
+- Textfarbe: #F7F7F7 (hell, neutral)
+- Neutral-Grau für sekundäre Textelemente
+
+## Typografie
+- Schriftart: Inter oder system default sans-serif
+- H1: 32–36px, fett
+- H2: 24px, halb-fett
+- Body: 16px
+- Small: 13–14px für Labels, Badges
+
+## Layout
+- **Header**: links Logo (LocalDöner, siehe beigefügtes SVG/PNG), rechts Suchfeld oder Filter
+- **Startseite**: md:grid-cols-2 → links Liste (Shop-Cards), rechts Karte (Leaflet)
+- **Mobile**: Liste über Karte (Stack), Suchleiste sticky oben
+- **Tablet/Desktop**: Split-Screen (Liste links, Karte rechts)
+- **Footer**: minimal, Links zu Impressum, Datenschutz, „Laden melden“
+
+## Komponenten-Stil
+- **Card**: bg-neutral-900, border border-neutral-800, rounded-2xl, shadow
+- **Badge/Chip**: kleine abgerundete Labels, Primärfarbe Rot oder Sekundärfarbe Grün, Großbuchstaben
+- **Buttons**:
+  - Primär: bg-red-600, text-white, hover:bg-red-700
+  - Sekundär: bg-green-600, text-white, hover:bg-green-700
+  - Neutral: bg-neutral-700, hover:bg-neutral-600
+- **Inputs**: Tailwind Forms, rounded-lg, Fokus mit Outline (rot oder grün)
+
+## Karte (Leaflet)
+- Höhe: 420px (min)
+- Tiles: OSM Standard → "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+- Markerfarbe Rot; Popup mit Name, Adresse, Link "Details"
+
+## Zustände
+- Loading: Skeleton-Cards + Karten-Spinner
+- Empty: freundlicher Hinweis + Button „Laden melden“
+- Error: neutrale Meldung + Retry-Button
+
+## Unterseiten
+- **/**: Liste + Karte + Filterchips (Halal, Veggie, Jetzt geöffnet)
+- **/ranking/{stadt}**: Ranking-Liste mit Sortieroptionen
+- **/laden/{slug}**: Detailseite (Name, ⭐ Rating, Badges, Adresse, Öffnungszeiten, Reviews, Galerie)
+- **/melden**: Formular Tabs (Neuen Laden melden | Änderung vorschlagen)
+- **/impressum** & **/datenschutz**: statische Rechtstexte
+- **/admin**: Light-Version, nur submissions einsehen (Dummy für MVP)
+
+## Responsiv / UX
+- Mobile-first, mit Breakpoints: sm=Stack, md=Split, lg=komfortabel
+- Hover-Effekte (leichter Schatten, Farbwechsel)
+- Fokuszustände sichtbar für A11y
+- Lighthouse Performance ≥ 90 ohne Bilder

@@ -1,0 +1,276 @@
+Alles klar — hier ist ein **vollständiger, copy-&-paste Replit-Prompt** auf Deutsch, der **Design**, **alle Funktionen**, **alle Unterseiten**, **Backend/DB/API** und **Qualitätskriterien** für **LocalDöner** präzise beschreibt. Du kannst ihn 1:1 in Replit einfügen.
+
+---
+
+```text
+Du bist ein Replit-Agent. Erzeuge eine produktionsnahe Web-App **LocalDöner** mit **Laravel 11 (PHP 8.2+)** und **Blade/Tailwind-Frontend**. Ziel: Nutzer:innen finden schnell den besten Döner in ihrer Nähe (Startgebiet: **Mittelsachsen**). Erstelle vollständigen Code (Backend+Frontend), Migrations, Seed-Daten, Styles und README gemäß dieser Spezifikation.
+
+================================================================
+# 1) Brand, Look & Feel (Designsystem)
+- Markenname: **LocalDöner**
+- Ziel: schnell, lokal, übersichtlich; Dark-UI
+- Farben:
+  - Primär (Chili-Rot): **#E63946**
+  - Sekundär (Frisch-Grün): **#2A9D8F**
+  - Hintergrund dunkel: **#0B0E14**
+  - Karten/Flächen dunkel: **#111318**
+  - Text hell: **#F7F7F7** / neutrale Grautöne
+- Typografie: System/Inter, klare Hierarchie:
+  - H1: 32–36px / fett
+  - H2: 24px / halb-fett
+  - Body: 16px
+  - Small: 13–14px (Labels, Badges)
+- Komponenten-Stil:
+  - **Card**: bg-neutral-900, border-neutral-800, rounded-2xl, shadow
+  - **Badge/Chip**: dezente Rahmen, kleine Großbuchstaben
+  - **Buttons**: primär (rot), sekundär (grün), neutral (hell auf dunkel)
+  - **Inputs**: Tailwind Forms, abgerundet, Fokuszustand sichtbar
+- Layout:
+  - **Header**: links Wortmarke „LocalDöner“, rechts Suche + evtl. Stadtwahl
+  - **Startseite**: **Split-View** (md:grid-cols-2) – links Liste, rechts Karte
+  - **Karte**: Leaflet (OSM), 420–520px Höhe, Marker/Popups
+  - **Footer**: Links (Impressum, Datenschutz, „Laden melden“)
+- Responsiv:
+  - **mobile** (≤ 640px): Karte unter Liste (Stack), Sticky-Suchleiste
+  - **tablet**: 1:1 Split; Liste scrollt, Karte fixiert
+  - **desktop**: 2-Spalten mit komfortablen Abständen
+- Zustände:
+  - **Loading**: Skeleton-Cards (3–5) in der Liste, provisorischer Karten-Spinner
+  - **Empty**: freundlicher Hinweis + „Laden melden“ CTA
+  - **Error**: neutraler Fehlerhinweis + Retry
+- A11y:
+  - Fokusstyles, ARIA-Labels für Karten-Steuerung, Formular-Labels, Kontrast prüfen
+
+================================================================
+# 2) Informationsarchitektur & Seiten
+Erstelle diese Routen & Seiten (Blade):
+
+1) **/** (Home)
+   - Suchleiste: Textfeld (Stadt/PLZ/Adresse), Button „Suchen“
+   - Filter-Chips: **Jetzt geöffnet**, **Halal**, **Veggie**
+   - Liste **Top in deiner Nähe** (oder nach Stadt): Shop-Cards
+     - Name, ⭐ Durchschnittsbewertung, Preislevel (€–€€€€), Badges (Halal/Veggie)
+     - Adresse (Straße, Stadt), kurzer Hinweis auf Öffnungszeiten heute
+   - Karte (Leaflet) rechts: Marker für gelistete Shops
+   - **Top-3-Box** (sticky/oben mobil): 3 beste Läden nach Score
+   - Footer: Impressum · Datenschutz · Laden melden
+
+2) **/ranking/{stadt}**
+   - Seitenkopf: Stadtname + Trefferanzahl
+   - Sortierleiste: **Beste Bewertung**, **Preis/Leistung**, **Entfernung**
+   - Ergebnisliste (paginierbar), gleiche Shop-Cards
+   - SEO-freundliche H1/Title/Meta
+
+3) **/laden/{slug}** (Shop-Detail)
+   - Header mit Name, ⭐, Badges; **„Route planen“** (Google/Apple Maps Link)
+   - **Bilder-Galerie** (Platzhalter, 3 Kacheln)
+   - **Adresse** + Copy-Button, **Telefon** (tel:), **Website** (extern)
+   - **Öffnungszeiten** (heute hervorgehoben; „Jetzt geöffnet“ Anzeige)
+   - **Highlights/Preise**: „Döner ab 6,00 €“ (Beispielfeld price_level)
+   - **Bewertungen (lesen)**: Liste (5 pro Seite)
+   - **Bewertung schreiben** (Form – text + rating 1..5, throttled)
+   - „Fehler melden / Daten aktualisieren“ (Link zu /melden?shop=slug)
+
+4) **/melden** (Laden melden/ändern)
+   - Tabs: **Neuen Laden melden** | **Änderung vorschlagen**
+   - Formularfelder:
+     - Name*, Adresse*, Stadt*, PLZ, Koordinaten (optional; autogeocoding möglich – MVP optional), Halal (bool), Veggie (bool), Website, Telefon, Öffnungszeiten (einfach), Freitext
+   - On submit: Speichern in **submissions** mit status=pending; Danke-State
+
+5) **/impressum**
+   - Betreiber: **KroBeX UG (haftungsbeschränkt)**
+   - Anschrift: **Stollberger Straße 85, 09119 Chemnitz**
+   - E-Mail: **info@localdoener.de**
+   - TODO-Hinweise: Geschäftsführer, Register, USt-ID nachtragen
+
+6) **/datenschutz**
+   - Aktuell **keine** Analytics/Cookies aktiv
+   - Kartenanzeige über **OpenStreetMap Tiles** (IP-Übertragung), Rechtsgrundlage Art. 6 Abs. 1 lit. f DSGVO
+   - Rechte der Betroffenen, Kontakt: info@localdoener.de
+   - TODO: Cookie-Banner, wenn später Analytics (Plausible/Umami) aktiv
+
+7) **/admin** (Moderation – einfache Light-Version)
+   - Login zunächst **deaktiviert** (nur Gate via ENV-Secret im Code, z. B. Header-Token) – reicht als MVP-Dummy
+   - Tabs: **Eingereichte Meldungen** (pending), **Shops verwalten**
+   - Meldungen prüfen/übernehmen/ablehnen (keine komplexe Rollenlogik)
+
+================================================================
+# 3) Funktionen & UX-Flows
+- **Suche** (Home):
+  - Eingabe Stadt/Adresse → Treffer in Liste & Karte, fallback: **Mittelsachsen** Städte-Seed
+- **Filter**:
+  - **Jetzt geöffnet**: Zeitlogik anhand opening_hours + aktuelle Zeit Europe/Berlin
+  - **Halal/Veggie**: booleans
+- **Sortierung**:
+  - Beste Bewertung (avg_rating),
+  - Preis/Leistung (Berechnung: rating / (price_level oder avg_price), MVP: rating zuerst, price_level als Tiebreaker),
+  - Entfernung (Haversine) – nur bei gegebener Nutzerposition
+- **Bewertungen**:
+  - Lesen: paginiert
+  - Schreiben: 1–5 Sterne + Text, Länge max. 2000, **Rate-Limiter** (IP/UA Hash)
+- **Favoriten**:
+  - Lokal im Browser (localStorage), Herz-Icon auf Card & Detail (MVP rein Frontend, keine DB)
+- **Meldungen/Änderungen**:
+  - Formular schreibt in **submissions** (pending). Admin-Light kann übernehmen → Shop aktualisieren/neu anlegen
+- **Karte**:
+  - Leaflet + OSM Tiles `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
+  - Marker/Popups; Klick auf Marker → Shop-Detail
+- **SEO**:
+  - Saubere Titles/Descriptions pro Seite
+  - **Schema.org** (LocalBusiness + AggregateRating) auf Detailseiten (als JSON-LD)
+
+================================================================
+# 4) Datenbank & Migrations (Laravel)
+Tabellen:
+
+**shops**
+- id (pk)
+- name (string)
+- slug (string unique)
+- lat (decimal 10,7), lng (decimal 10,7)
+- street (string), city (string), zip (string nullable)
+- phone (string nullable), website (string nullable)
+- price_level (tinyInteger nullable, 1..4)
+- halal (boolean default 0), veg (boolean default 0)
+- meat_type (string nullable)
+- is_published (boolean default 1)
+- timestamps
+
+**opening_hours**
+- id, shop_id (fk)
+- weekday (tinyInteger 0=So … 6=Sa)
+- open (time), close (time)
+- note (string nullable)
+
+**reviews**
+- id, shop_id (fk)
+- rating (tinyInteger 1..5)
+- text (text)
+- user_hash (string 64)
+- created_at (timestamp)
+
+**photos**
+- id, shop_id (fk)
+- url (string), source (string nullable)
+- created_at (timestamp)
+
+**submissions**
+- id
+- type (enum: new, update)
+- payload (json)
+- status (enum: pending, approved, rejected) default pending
+- created_at (timestamp)
+
+**cities**
+- id
+- name (string)
+- slug (string unique)
+- lat, lng (decimal 10,7)
+- bbox (json nullable)
+
+Indizes:
+- shops(city), shops(slug unique), kombi-Index (lat,lng)
+
+================================================================
+# 5) Seed-Daten (Mittelsachsen)
+- **cities**: Freiberg, Brand-Erbisdorf, Chemnitz, Hainichen, Flöha, Döbeln, Mittweida, Frankenberg (mit groben lat/lng nahe Zentrum)
+- **shops**: je Stadt 2–3 Dummy-Shops (realistische Namen/Adressen in zentraler Lage; Koordinaten ca.)
+- **opening_hours**: Standard Mo–So 11:00–22:00
+- **reviews**: je Shop 1–2 kurze Dummy-Rezensionen
+
+================================================================
+# 6) API (routes/api.php) – REST
+- **GET /api/cities** → Liste {name, slug, lat, lng}
+- **GET /api/top?city=&limit=** → Top-Shops in Stadt (Default limit=3)
+- **GET /api/shops?city=&lat=&lng=&radius=&open_now=&tags=**  
+  - Filter: city (string), open_now (bool), tags (csv: halal,veg), radius (km; optional)
+  - Sortierung: by=rating|value|distance (optional)
+- **GET /api/shops/{slug}** → Detail inkl. hours, photos, avg_rating
+- **POST /api/reviews** {shop_id, rating, text} — Validate + **Throttle (10/min)**
+- **POST /api/submissions** {type, payload} — pending Queue
+- **CORS**: erlauben `http://localhost:3000`, `http://localhost:8000`, `https://localdoener.de`, `https://xn--lokaldner-kcb.de`
+
+**Antwort-Schemas** sauber tippen (Resource/Transformer) und Felder klar benennen.
+
+================================================================
+# 7) Web-Routen (routes/web.php)
+- GET **/** → HomeController@index
+- GET **/ranking/{city}** → RankingController@city
+- GET **/laden/{slug}** → ShopController@show
+- GET **/melden** → SubmissionController@create
+- POST **/melden** → SubmissionController@store (web CSRF)
+- GET **/impressum**, GET **/datenschutz**
+- GET **/admin** → AdminLightController@index (nur via ENV-Header-Secret zugänglich)
+
+================================================================
+# 8) Controller, Requests & Services
+**Controller**
+- HomeController: liest Query (city|lat|lng|filter), liefert Liste + Karte
+- RankingController: sortierte Stadtliste (bewertung, value, distance)
+- ShopController: show(slug)
+- ReviewController: store() → nutzt ReviewStoreRequest
+- SubmissionController: create(), store()
+- CityController (API): index(), top()
+- AdminLightController: index(), approve(), reject(), applySubmission()
+
+**FormRequests**
+- ReviewStoreRequest: rating required 1..5, text max:2000; serverseitig `user_hash = sha256(ip + ua)`
+- SubmissionStoreRequest: type in [new,update]; payload required json
+
+**Services**
+- GeoService: Haversine-Sortierung (RAW SQL für SQLite okay); OpenNow-Check anhand opening_hours
+- ScoreService: Ranking-Score (zuerst rating desc, dann price_level asc)
+
+================================================================
+# 9) Frontend (Blade + Tailwind)
+- **layouts/app.blade.php**: Meta-Tags (SEO), JSON-LD (LocalBusiness/AggregateRating auf Detail), Header/Footer
+- **home.blade.php**: Suche + Filter + Liste (Cards) + Map-Container
+- **shop/show.blade.php**: Detail, Galerie-Platzhalter, Öffnungszeiten (heute fett), Reviews + Formular
+- **melden/index.blade.php**: Formular mit Feldern (s.o.), Erfolgsnachricht
+- **legal/impressum.blade.php**, **legal/datenschutz.blade.php**: Inhalte wie oben
+- **components** (optional): shop-card.blade.php, badge.blade.php
+
+**Leaflet**:
+- Import CSS via Vite, MapContainer Höhe 420px
+- Tile URL: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
+- Marker aus Ergebnisliste; Popup: Name + Adresse + Link „Details“
+
+================================================================
+# 10) Qualität, Sicherheit, Performance
+- **Rate Limiting**: `api` middleware throttle:60,1 ; Reviews-Store zusätzlich 10/min
+- **CSRF**: aktiv in Web-Forms
+- **CORS**: gezielt wie oben
+- **Errorpages**: einfache 404/500
+- **Lighthouse**: ohne Bilder ≥ 90
+- **A11y**: Labels, Kontrast, Fokus
+- **Logging**: Speicherung von Submission-Aktionen (approve/reject)
+
+================================================================
+# 11) README (erstellen)
+- Setup-Schritte:
+  - `composer install`
+  - `cp .env.example .env`
+  - `php artisan key:generate`
+  - `.env` auf SQLite
+  - `php artisan migrate --seed`
+  - `npm install && npm run build`
+  - `php artisan serve`
+- Domainhinweis:
+  - IONOS A-Records → 91.98.125.145 (Produktiv später via Nginx/Apache + PHP-FPM + SSL/Certbot)
+- Hinweise: später Analytics/Consent aktivieren
+
+================================================================
+# 12) Akzeptanzkriterien (DoD)
+- Home rendert Liste+Karte, Filter funktionieren (Halal/Veggie, „Jetzt geöffnet“).
+- /ranking/{city} sortiert korrekt (bewertung/value/distance).
+- /laden/{slug} zeigt Details inkl. Öffnungszeiten (heute hervorgehoben) + Reviews (lesen/schreiben).
+- /melden speichert Submission (pending) und zeigt Bestätigung.
+- API-Routen liefern erwartete JSON-Schemas.
+- Impressum/Datenschutz sind vorhanden (echte Betreiberdaten).
+- Responsives Dark-Design, klare UI-Zustände (Loading/Empty/Error).
+
+================================================================
+# 13) Implementiere jetzt das vollständige Projekt genau nach dieser Spezifikation.
+```
+
+Wenn du möchtest, packe ich dir zusätzlich noch einen **zweiten Prompt** für eine optionale **/docs**-Seite mit deinem kompletten WhatsApp-Backlog (als Markdown importierbar). Sag Bescheid!

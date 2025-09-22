@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* LocalDöner Design System Colors */
+  --background: hsl(218, 44%, 6%); /* #0B0E14 */
+  --foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --card: hsl(215, 20%, 11%); /* #111318 */
+  --card-foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --popover: hsl(215, 20%, 11%); /* #111318 */
+  --popover-foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --primary: hsl(354, 70%, 57%); /* #E63946 - Chili-Rot */
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(174, 48%, 40%); /* #2A9D8F - Frisch-Grün */
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(215, 13%, 18%);
+  --muted-foreground: hsl(217, 9%, 61%);
+  --accent: hsl(174, 48%, 40%); /* #2A9D8F - Frisch-Grün */
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(215, 13%, 22%);
+  --input: hsl(215, 13%, 18%);
+  --ring: hsl(354, 70%, 57%); /* #E63946 */
+  --chart-1: hsl(354, 70%, 57%); /* #E63946 */
+  --chart-2: hsl(174, 48%, 40%); /* #2A9D8F */
+  --chart-3: hsl(42, 93%, 56%);
+  --chart-4: hsl(147, 79%, 42%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(215, 20%, 11%); /* #111318 */
+  --sidebar-foreground: hsl(0, 0%, 85%);
+  --sidebar-primary: hsl(354, 70%, 57%); /* #E63946 */
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(174, 48%, 40%); /* #2A9D8F */
+  --sidebar-accent-foreground: hsl(0, 0%, 100%);
+  --sidebar-border: hsl(215, 13%, 22%);
+  --sidebar-ring: hsl(354, 70%, 57%); /* #E63946 */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 16px; /* rounded-2xl for modern design */
+  --shadow-2xs: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00), 0px 1px 2px -1px hsl(354, 84%, 57%, 0.00);
+  --shadow: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00), 0px 1px 2px -1px hsl(354, 84%, 57%, 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00), 0px 2px 4px -1px hsl(354, 84%, 57%, 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00), 0px 4px 6px -1px hsl(354, 84%, 57%, 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00), 0px 8px 10px -1px hsl(354, 84%, 57%, 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(354, 84%, 57%, 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  /* LocalDöner Design System Colors - Dark Theme */
+  --background: hsl(218, 44%, 6%); /* #0B0E14 */
+  --foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --card: hsl(215, 20%, 11%); /* #111318 */
+  --card-foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --popover: hsl(215, 20%, 11%); /* #111318 */
+  --popover-foreground: hsl(0, 0%, 97%); /* #F7F7F7 */
+  --primary: hsl(354, 70%, 57%); /* #E63946 - Chili-Rot */
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(174, 48%, 40%); /* #2A9D8F - Frisch-Grün */
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(215, 13%, 18%);
+  --muted-foreground: hsl(217, 9%, 61%);
+  --accent: hsl(174, 48%, 40%); /* #2A9D8F - Frisch-Grün */
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(215, 13%, 22%);
+  --input: hsl(215, 13%, 18%);
+  --ring: hsl(354, 70%, 57%); /* #E63946 */
+  --sidebar: hsl(215, 20%, 11%); /* #111318 */
+  --sidebar-foreground: hsl(0, 0%, 85%);
+  --sidebar-primary: hsl(354, 70%, 57%); /* #E63946 */
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(174, 48%, 40%); /* #2A9D8F */
+  --sidebar-accent-foreground: hsl(0, 0%, 100%);
+  --sidebar-border: hsl(215, 13%, 22%);
+  --sidebar-ring: hsl(354, 70%, 57%); /* #E63946 */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  html {
+    @apply dark;
+  }
+
+  /* Typography Scale - LocalDöner Design System */
+  h1 {
+    @apply text-3xl font-bold; /* 32-36px */
+  }
+
+  h2 {
+    @apply text-2xl font-semibold; /* 24px */
+  }
+
+  p {
+    @apply text-base; /* 16px */
+  }
+
+  .text-small {
+    @apply text-sm; /* 13-14px for labels, badges */
+  }
+}
+
+/* Leaflet customizations */
+.leaflet-container {
+  background: var(--card) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.leaflet-control {
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+}
+
+.leaflet-control a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  color: var(--foreground) !important;
+}
+
+/* Custom animations */
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.price-badge {
+  background: linear-gradient(135deg, var(--secondary), hsl(160, 84%, 39%));
+}
+
+.rating-star {
+  color: hsl(45, 93%, 47%);
+}
+
+/* Custom utilities */
+.text-rating {
+  color: hsl(45, 93%, 47%);
+}
+
+.bg-success {
+  background-color: hsl(142, 71%, 45%);
+}
+
+.bg-warning {
+  background-color: hsl(35, 91%, 62%);
+}
+
+.bg-error {
+  background-color: hsl(0, 84%, 60%);
+}
